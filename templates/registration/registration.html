@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VADIM MALYSHEV</title>
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+</head>
+<body>
+<div class="menu">
+    <a href="{% url 'home' %}"><img src="{% static 'pic/logo.png' %}" alt="" style="width: 180px;"></a>
+    <a href="{% url 'cart' %}">Корзина<img src="https://cdn2.iconfinder.com/data/icons/flaticons-solid/16/cart-3-512.png" alt="" style="width: 20px;"></a>
+        {% if not user.username %}
+    <a href="{% url 'login' %}"><img src="{% static 'pic/login.png' %}" alt="" style="width: 80px;"></a>
+{% else %}
+    <a href="{% url 'logout' %}"><img src="{% static 'pic/logout.png' %}" alt="" style="width: 80px;"></a>
+{% endif %}
+</div>
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" href="{% static '2.css' %}">
+    <form action="" method="post" novalidate>
+    {% csrf_token %}
+    {% for one in forma %}
+        <div>{{ one.label_tag }} {{ one }}</div>
+        <div>{{ one.errors }}</div>
+    {% endfor %}
+    <input type="submit" value="Отправить">
+    </form>
+
+{% endblock %}

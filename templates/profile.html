@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'profile.css' %}">
+</head>
+<body>
+    <h1>Личный кабинет</h1>
+    <h2>Мои заказы</h2>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <ul>
+        {% for order in orders %}
+            <li>
+                {{ order.id }} - {{ order.date }} - Total: ${{ order.total }}
+                <ul>
+                    {% for item in order.orderitem_set.all %}
+                        <li>
+                            <img src="{{ item.product.image }}" alt="{{ item.product.title }}" style="width: 100px;">
+                            {{ item.product.title }} - {{ item.quantity }} шт.
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if latest_order %}
+    <h3>Последний заказ</h3>
+    <p>{{ latest_order.id }} - {{ latest_order.date }} - Total: ${{ latest_order.total }}</p>
+    <ul>
+        {% for item in latest_order.orderitem_set.all %}
+            <li>
+                <img src="{{ item.product.image }}" alt="{{ item.product.title }}" style="width: 100px;">
+                {{ item.product.title }} - {{ item.quantity }} шт.
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>У вас пока нет заказов.</p>
+    {% endif %}
+</body>
+</html>

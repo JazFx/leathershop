@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VADIM MALYSHEV</title>
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+</head>
+<body>
+<div class="menu">
+    <a href="{% url 'home' %}"><img src="{% static 'pic/logo.png' %}" alt="" style="width: 180px;"></a>
+    <a href="{% url 'cart' %}">Корзина<img src="https://cdn2.iconfinder.com/data/icons/flaticons-solid/16/cart-3-512.png" alt="" style="width: 20px;"></a>
+        {% if not user.username %}
+    <a href="{% url 'login' %}"><img src="{% static 'pic/login.png' %}" alt="" style="width: 80px;"></a>
+{% else %}
+    <a href="{% url 'logout' %}"><img src="{% static 'pic/logout.png' %}" alt="" style="width: 25px;"></a>
+{% endif %}
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}">
+            <img src="https://www.pngmart.com/files/21/Account-User-PNG-Clipart.png" alt="" style="width: 25px">
+        </a>
+    {% else %}
+        <a href="{% url 'profile' %}">
+            <img src="https://www.pngmart.com/files/21/Account-User-PNG-Clipart.png" alt="" style="width: 25px">
+        </a>
+    {% endif %}
+</div>
+<div class="products">
+{% for product in products %}
+<div class="product-card">
+    <a href="{% url 'infoproduct' product.id %}">
+        <img src="{{ product.image }}" alt="{{ product.title }}">
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.minidescription }}</p>
+        <p>Цена: ${{ product.price }}</p>
+    </a>
+    <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+</div>
+{% endfor %}
+<script>
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            var productId = this.getAttribute('data-product-id');
+            fetch('/add_to_cart/' + productId + '/')
+                .then(response => {
+                    if (response.ok) {
+                        alert('Товар успешно добавлен в корзину');
+                    } else {
+                        alert('Ошибка при добавлении товара в корзину');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при добавлении товара в корзину:', error);
+                });
+        });
+    });
+</script>
+</div>
+    <footer class="footer">
+            <div class="footer-content">
+                <div class="logo">
+                    <img src="{% static 'pic/logo.png' %}" alt="" style="width:180px">
+                </div>
+                <div class="contact-info">
+                    <p>Контактные данные:</p>
+                    <p>Телефон: +77778886655</p>
+                    <p>Email: vmleathershop@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

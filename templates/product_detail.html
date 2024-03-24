@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'detail.css' %}">
+    <title>Detail</title>
+</head>
+<body>
+<div class="container">
+<div class="product-details">
+        <h1>{{ product.title }}</h1>
+        <img src="{{ product.image }}" alt="{{ product.title }}">
+        <p>Цена: ${{ product.price }}</p>
+        <button class="add-to-cart" data-product-id="{{ product.id }}">Добавить в корзину</button>
+</div>
+    <div class="product-carousel">
+        <div class="carousel">
+            <div class="carousel-images">
+                {% for image in product.images.all %}
+                    <img src="{{ image.image_url }}" alt="{{ product.title }}">
+                {% endfor %}
+            </div>
+            <button class="prev">&#10094;</button>
+            <button class="next">&#10095;</button>
+        </div>
+    <p>{{ product.description }}</p>
+    </div>
+    <script>
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                var productId = this.getAttribute('data-product-id');
+                fetch('/add_to_cart/' + productId + '/')
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Товар добавлен в корзину');
+                        } else {
+                            alert('Ошибка при добавлении товара в корзину');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при добавлении товара в корзину:', error);
+                    });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+    const carouselImages = document.querySelector('.carousel-images');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+    const images = document.querySelectorAll('.carousel-images img');
+    const imageWidth = images[0].clientWidth;
+    let counter = 1;
+
+    carouselImages.style.transform = `translateX(-${imageWidth * counter}px)`;
+
+    nextBtn.addEventListener('click', () => {
+        if (counter >= images.length - 1) return;
+        counter++;
+        carouselImages.style.transition = "transform 0.4s ease-in-out";
+        carouselImages.style.transform = `translateX(-${imageWidth * counter}px)`;
+    });
+
+    prevBtn.addEventListener('click', () => {
+        if (counter <= 0) return;
+        counter--;
+        carouselImages.style.transition = "transform 0.4s ease-in-out";
+        carouselImages.style.transform = `translateX(-${imageWidth * counter}px)`;
+    });
+
+    carouselImages.addEventListener('transitionend', () => {
+        if (images[counter] === images[0]) {
+            carouselImages.style.transition = "none";
+            counter = images.length - 2;
+            carouselImages.style.transform = `translateX(-${imageWidth * counter}px)`;
+        }
+        if (images[counter] === images[images.length - 1]) {
+            carouselImages.style.transition = "none";
+            counter = 1;
+            carouselImages.style.transform = `translateX(-${imageWidth * counter}px)`;
+        }
+    });
+});
+    </script>
+</body>
+</html>

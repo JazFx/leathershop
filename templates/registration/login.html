@@ -1,0 +1,37 @@
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+    <body>
+    <div class="menu">
+    <a href="{% url 'home' %}"><img src="{% static 'pic/logo.png' %}" alt="" style="width: 180px;"></a>
+    <a href="{% url 'cart' %}">Корзина<img src="https://cdn2.iconfinder.com/data/icons/flaticons-solid/16/cart-3-512.png" alt="" style="width: 20px;"></a>
+        {% if not user.username %}
+    <a href="{% url 'login' %}"><img src="{% static 'pic/login.png' %}" alt="" style="width: 80px;"></a>
+{% else %}
+    <a href="{% url 'logout' %}"><img src="{% static 'pic/logout.png' %}" alt="" style="width: 80px;"></a>
+{% endif %}
+</div>
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{% url 'password_reset' %}">Забыл пароль</a>
+            </td>
+        </tr>
+    </table>
+<input type="submit" value="Войти">
+</form>
+    <h3>
+    <a href="{% url 'registration' %}">Регистрация</a>
+    </h3>
+    </body>
+{% endblock %}
